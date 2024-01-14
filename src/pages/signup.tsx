@@ -2,17 +2,33 @@ import React, { useState } from 'react';
 import { FcGoogle } from '@react-icons/all-files/fc/FcGoogle';
 import { ColorRing } from 'react-loader-spinner';
 
+import { Person } from '../utils/types';
+
 const Signup = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
+	const [data, setData] = useState<Person>({
+		name: '',
+		firstname: '',
+		email: '',
+		password: '',
+	});
+
+	const handleChange = (e: any) => {
+		const { name, value } = e.target;
+		setData((prevState) => ({ ...prevState, [name]: value }));
+	};
+
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-        setIsLoading(true);
+		setIsLoading(true);
 	};
 
 	return (
 		<main className='bg-white w-full h-screen md:h-max flex flex-col justify-center items-center'>
-			<form onSubmit={handleSubmit} className='p-4 w-11/12 md:w-[400px] flex flex-col justify-center gap-y-4'>
+			<form
+				onSubmit={handleSubmit}
+				className='p-4 w-11/12 md:w-[400px] flex flex-col justify-center gap-y-4'>
 				<div className='flex flex-col gap-2'>
 					<h3 className='text-sm text-shark-950 text-normal font-normal'>
 						Bienvenu(e)
@@ -35,6 +51,7 @@ const Signup = () => {
 						placeholder='johndoe@gmail.com'
 						required
 						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						onChange={(e) => handleChange(e)}
 					/>
 					<p className='text-red-500 text-sm'>Field Required</p>
 				</div>
@@ -52,6 +69,7 @@ const Signup = () => {
 						placeholder='Doe'
 						required
 						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						onChange={(e) => handleChange(e)}
 					/>
 					<p className='text-red-500 text-sm'>Field Required</p>
 				</div>
@@ -69,6 +87,7 @@ const Signup = () => {
 						placeholder='John'
 						required
 						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						onChange={(e) => handleChange(e)}
 					/>
 					<p className='text-red-500 text-sm'>Field Required</p>
 				</div>
@@ -86,6 +105,7 @@ const Signup = () => {
 						placeholder='********'
 						required
 						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						onChange={(e) => handleChange(e)}
 					/>
 					<p className='text-red-500 text-sm'>Field Required</p>
 				</div>
