@@ -1,27 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { FcGoogle } from '@react-icons/all-files/fc/FcGoogle';
 import { ColorRing } from 'react-loader-spinner';
 
 import { Person } from '../utils/types';
+import {
+	isEmailValid,
+	isNameValid,
+	isPasswordValid,
+	areAllErrorsEmpty,
+} from '../utils/validate';
 
 const Signup = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<boolean>(false);
 
 	const [data, setData] = useState<Person>({
 		name: '',
 		firstname: '',
 		email: '',
 		password: '',
+		confirmPassword: ''
+	});
+
+	const [errorMessage, setErrorMessage] = useState<Person>({
+		name: '',
+		firstname: '',
+		email: '',
+		password: '',
+		confirmPassword: '',
 	});
 
 	const handleChange = (e: any) => {
 		const { name, value } = e.target;
 		setData((prevState) => ({ ...prevState, [name]: value }));
+		setErrorMessage((prevState) => ({ ...prevState, [name]: '' }));
 	};
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		setIsLoading(true);
+
+		if (!isEmailValid(data.email!)) {
+			setErrorMessage((prevState) => ({
+				...prevState,
+				email: "Veuillez inclure '@' dans votre adresse",
+			}));
+		}
+
+		if (!isNameValid(data.name!)) {
+			setErrorMessage((prevState) => ({
+				...prevState,
+				name: 'Le nom doit avoir au moins 3 caractères et pas de caractères spéciaux ni des chiffres !',
+			}));
+		}
+
+		if (!isPasswordValid(data.password!)) {
+			setErrorMessage((prevState) => ({
+				...prevState,
+				password:
+					'Le mot de passe doit avoir au moins 8 caractères, une majuscule, un caractère spécial et un chiffre',
+			}));
+		}
+
+		if (data.password! !== data.confirmPassword!) {
+			setErrorMessage((prevState) => ({
+				...prevState,
+				confirmPassword: 'Les mots de passe ne sont pas identique!',
+			}));
+		}
+
+		if (!areAllErrorsEmpty(errorMessage)) return;
+		if (areAllErrorsEmpty(errorMessage)) setIsLoading(true);
+		
 	};
 
 	return (
@@ -50,10 +99,10 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='johndoe@gmail.com'
 						required
-						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						className={errorMessage.email ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
 						onChange={(e) => handleChange(e)}
 					/>
-					<p className='text-red-500 text-sm'>Field Required</p>
+					{errorMessage.email && <p className='text-red-500 text-sm'>{errorMessage.email}</p>}
 				</div>
 				<div className='flex flex-col gap-2'>
 					<label
@@ -68,10 +117,12 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='Doe'
 						required
-						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						className={errorMessage.name ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
 						onChange={(e) => handleChange(e)}
 					/>
-					<p className='text-red-500 text-sm'>Field Required</p>
+					{errorMessage.name && (
+						<p className='text-red-500 text-sm'>{errorMessage.name}</p>
+					)}
 				</div>
 				<div className='flex flex-col gap-2'>
 					<label
@@ -86,10 +137,12 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='John'
 						required
-						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						className={errorMessage.firstname ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
 						onChange={(e) => handleChange(e)}
 					/>
-					<p className='text-red-500 text-sm'>Field Required</p>
+					{errorMessage.firstname && (
+						<p className='text-red-500 text-sm'>{errorMessage.firstname}</p>
+					)}
 				</div>
 				<div className='flex flex-col gap-2'>
 					<label
@@ -104,14 +157,16 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='********'
 						required
-						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						className={errorMessage.password ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
 						onChange={(e) => handleChange(e)}
 					/>
-					<p className='text-red-500 text-sm'>Field Required</p>
+					{errorMessage.password && (
+						<p className='text-red-500 text-sm'>{errorMessage.password}</p>
+					)}
 				</div>
 				<div className='flex flex-col gap-2'>
 					<label
-						htmlFor='password'
+						htmlFor='confirmPassword'
 						className='text-base'>
 						Confimation du mot de passe
 					</label>
@@ -122,9 +177,13 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='********'
 						required
-						className='p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						className={!errorMessage.confirmPassword ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
 					/>
-					<p className='text-red-500 text-sm'>Field Required</p>
+					{!errorMessage.confirmPassword ? (
+						<p className='text-red-500 text-sm'>
+							{errorMessage.confirmPassword}
+						</p>
+					) : null}
 				</div>
 				<div className='flex flex-col justify-center items-center gap-2.5'>
 					<button
