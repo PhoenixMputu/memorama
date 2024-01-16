@@ -117,7 +117,7 @@ const Signup = () => {
 					</label>
 					<input
 						type='password'
-						name='password'
+						name='confirmPassword'
 						id='confirmPassword'
 						autoComplete='on'
 						placeholder='********'
