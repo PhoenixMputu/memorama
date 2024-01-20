@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { navigate } from 'gatsby';
+import { Helmet } from 'react-helmet';
 import axios from 'axios';
 import { FcGoogle } from '@react-icons/all-files/fc/FcGoogle';
 import { ColorRing } from 'react-loader-spinner';
@@ -77,11 +78,11 @@ const Signup = () => {
 				email: data.email,
 				name: data.name,
 				firstname: data.firstname,
-				password: data.confirmPassword
+				password: data.confirmPassword,
 			})
 			.then(function () {
 				setIsLoading(false);
-				navigate('/404')
+				navigate('/sendMail');
 			})
 			.catch(function (error) {
 				console.log(error);
@@ -91,6 +92,29 @@ const Signup = () => {
 
 	return (
 		<main className='bg-white w-full h-screen md:h-max flex flex-col justify-center items-center'>
+			<Helmet>
+				<meta
+					property='og:title'
+					content='Memorama - Inscription'
+				/>
+				<meta
+					property='og:description'
+					content='Description de votre page.'
+				/>
+				<meta
+					property='og:image'
+					content="URL de l'image à afficher lors du partage"
+				/>
+				<meta
+					name='twitter:card'
+					content='summary_large_image'
+				/>
+				<meta
+					name='twitter:creator'
+					content='@votrecompte'
+				/>
+			</Helmet>
+
 			<form
 				onSubmit={handleSubmit}
 				className='p-4 w-11/12 md:w-[400px] flex flex-col justify-center gap-y-4'>
