@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState } from 'react';
+import { navigate } from 'gatsby';
+import axios from 'axios';
 import { FcGoogle } from '@react-icons/all-files/fc/FcGoogle';
 import { ColorRing } from 'react-loader-spinner';
 
@@ -12,14 +14,13 @@ import {
 
 const Signup = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [error, setError] = useState<boolean>(false);
 
 	const [data, setData] = useState<Person>({
 		name: '',
 		firstname: '',
 		email: '',
 		password: '',
-		confirmPassword: ''
+		confirmPassword: '',
 	});
 
 	const [errorMessage, setErrorMessage] = useState<Person>({
@@ -70,7 +71,22 @@ const Signup = () => {
 
 		if (!areAllErrorsEmpty(errorMessage)) return;
 		if (areAllErrorsEmpty(errorMessage)) setIsLoading(true);
-		
+
+		axios
+			.post(`${process.env.GATSBY_API_URL}/auth/signup`, {
+				email: data.email,
+				name: data.name,
+				firstname: data.firstname,
+				password: data.confirmPassword
+			})
+			.then(function () {
+				setIsLoading(false);
+				navigate('/404')
+			})
+			.catch(function (error) {
+				console.log(error);
+				setIsLoading(false);
+			});
 	};
 
 	return (
@@ -99,10 +115,16 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='johndoe@gmail.com'
 						required
-						className={errorMessage.email ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
+						className={
+							errorMessage.email
+								? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950'
+								: 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						}
 						onChange={(e) => handleChange(e)}
 					/>
-					{errorMessage.email && <p className='text-red-500 text-sm'>{errorMessage.email}</p>}
+					{errorMessage.email && (
+						<p className='text-red-500 text-sm'>{errorMessage.email}</p>
+					)}
 				</div>
 				<div className='flex flex-col gap-2'>
 					<label
@@ -117,7 +139,11 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='Doe'
 						required
-						className={errorMessage.name ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
+						className={
+							errorMessage.name
+								? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950'
+								: 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						}
 						onChange={(e) => handleChange(e)}
 					/>
 					{errorMessage.name && (
@@ -137,7 +163,11 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='John'
 						required
-						className={errorMessage.firstname ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
+						className={
+							errorMessage.firstname
+								? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950'
+								: 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						}
 						onChange={(e) => handleChange(e)}
 					/>
 					{errorMessage.firstname && (
@@ -157,7 +187,11 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='********'
 						required
-						className={errorMessage.password ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
+						className={
+							errorMessage.password
+								? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950'
+								: 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						}
 						onChange={(e) => handleChange(e)}
 					/>
 					{errorMessage.password && (
@@ -177,9 +211,14 @@ const Signup = () => {
 						autoComplete='on'
 						placeholder='********'
 						required
-						className={!errorMessage.confirmPassword ? 'p-1.5 outline outline-1 outline-red-500 rounded-md text-shark-950 focus:outline-shark-950' : 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'}
+						className={
+							errorMessage.confirmPassword
+								? 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+								: 'p-1.5 outline outline-1 outline-shark-400 rounded-md text-shark-950 focus:outline-shark-950'
+						}
+						onChange={(e) => handleChange(e)}
 					/>
-					{!errorMessage.confirmPassword ? (
+					{errorMessage.confirmPassword ? (
 						<p className='text-red-500 text-sm'>
 							{errorMessage.confirmPassword}
 						</p>
