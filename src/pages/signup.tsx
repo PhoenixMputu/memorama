@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { navigate } from 'gatsby';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
+
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { FcGoogle } from '@react-icons/all-files/fc/FcGoogle';
+import { MdPortableWifiOff } from '@react-icons/all-files/md/MdPortableWifiOff';
 import { ColorRing } from 'react-loader-spinner';
 
 import { Person } from '../utils/types';
@@ -12,6 +17,7 @@ import {
 	isPasswordValid,
 	areAllErrorsEmpty,
 } from '../utils/validate';
+import { log } from 'console';
 
 const Signup = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -85,8 +91,32 @@ const Signup = () => {
 				navigate('/sendMail');
 			})
 			.catch(function (error) {
-				console.log(error);
-				setIsLoading(false);
+				if (error.response.status === 500) {
+					setIsLoading(false);
+					return toast.error("Tu n'es pas connecté à internet", {
+						position: 'top-center',
+						autoClose: 10000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+						theme: 'colored',
+						transition: Bounce,
+					});
+				}
+
+				return toast.error(error.message, {
+					position: 'top-center',
+					autoClose: 10000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+					theme: 'colored',
+					transition: Bounce,
+				});
 			});
 	};
 
@@ -114,7 +144,7 @@ const Signup = () => {
 					content='@votrecompte'
 				/>
 			</Helmet>
-
+			<ToastContainer icon={<MdPortableWifiOff />} />
 			<form
 				onSubmit={handleSubmit}
 				className='p-4 w-11/12 md:w-[400px] flex flex-col justify-center gap-y-4'>
