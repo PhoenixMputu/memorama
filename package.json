@@ -16,7 +16,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@react-icons/all-files": "^4.1.0",
+    "@types/react-helmet": "^6.1.11",
     "autoprefixer": "^10.4.16",
+    "axios": "^1.6.5",
+    "dotenv": "^16.3.1",
     "gatsby": "^5.13.1",
     "gatsby-omni-font-loader": "^2.0.2",
     "gatsby-plugin-image": "^3.13.0",
@@ -24,13 +28,18 @@
     "gatsby-plugin-sharp": "^5.13.0",
     "gatsby-source-filesystem": "^5.13.0",
     "gatsby-transformer-sharp": "^5.13.0",
+    "js-cookie": "^3.0.5",
     "postcss": "^8.4.33",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
-    "tailwindcss": "^3.4.1"
+    "react-loader-spinner": "^6.1.6",
+    "react-toastify": "^10.0.4",
+    "tailwindcss": "^3.4.1",
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.10.6",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",

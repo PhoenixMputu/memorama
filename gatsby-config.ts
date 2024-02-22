@@ -1,5 +1,11 @@
 import type { GatsbyConfig } from "gatsby";
 
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: `.env.${process.env.NODE_ENV}`,
+});
+
 const config: GatsbyConfig = {
   siteMetadata: {
     title: `memorama`,
@@ -16,6 +22,7 @@ const config: GatsbyConfig = {
       "path": "./src/images/",
       enableListener: true,
       preconnect: [`https://fonts.googleapis.com`, `https://fonts.gstatic.com`],
+      apiKey: process.env.API_KEY,
       web: [
         {
           name: ['Roboto', 'DM Sans'],
