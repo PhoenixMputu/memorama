@@ -141,7 +141,7 @@ const Signup = () => {
 					content='@votrecompte'
 				/>
 			</Helmet>
-			<ToastContainer icon={<MdPortableWifiOff />} />
+			<ToastContainer />
 			<form
 				onSubmit={handleSubmit}
 				className='p-4 w-11/12 md:w-[400px] flex flex-col justify-center gap-y-4'>
