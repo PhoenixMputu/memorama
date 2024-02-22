@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { navigate } from 'gatsby';
+import { navigate, Link } from 'gatsby';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
 
@@ -15,9 +15,7 @@ import {
 	isEmailValid,
 	isNameValid,
 	isPasswordValid,
-	areAllErrorsEmpty,
 } from '../utils/validate';
-import { log } from 'console';
 
 const Signup = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -44,80 +42,79 @@ const Signup = () => {
 		setErrorMessage((prevState) => ({ ...prevState, [name]: '' }));
 	};
 
-	const handleSubmit = (e: any) => {
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
+	  
+		let hasErrors = false;
+	  
 		if (!isEmailValid(data.email!)) {
-			setErrorMessage((prevState) => ({
-				...prevState,
-				email: "Veuillez inclure '@' dans votre adresse",
-			}));
+		  setErrorMessage((prevState) => ({
+			...prevState,
+			email: "Veuillez inclure '@' dans votre adresse email.",
+		  }));
+		  hasErrors = true;
 		}
-
+	  
 		if (!isNameValid(data.name!)) {
-			setErrorMessage((prevState) => ({
-				...prevState,
-				name: 'Le nom doit avoir au moins 3 caractères et pas de caractères spéciaux ni des chiffres !',
-			}));
+		  setErrorMessage((prevState) => ({
+			...prevState,
+			name: 'Le nom doit avoir au moins 3 caractères et ne doit pas contenir de caractères spéciaux ni de chiffres.',
+		  }));
+		  hasErrors = true;
 		}
-
+	  
 		if (!isPasswordValid(data.password!)) {
-			setErrorMessage((prevState) => ({
-				...prevState,
-				password:
-					'Le mot de passe doit avoir au moins 8 caractères, une majuscule, un caractère spécial et un chiffre',
-			}));
+		  setErrorMessage((prevState) => ({
+			...prevState,
+			password: 'Le mot de passe doit avoir au moins 8 caractères, une majuscule, un caractère spécial et un chiffre.',
+		  }));
+		  hasErrors = true;
 		}
-
-		if (data.password! !== data.confirmPassword!) {
-			setErrorMessage((prevState) => ({
-				...prevState,
-				confirmPassword: 'Les mots de passe ne sont pas identique!',
-			}));
+	  
+		if (data.password !== data.confirmPassword) {
+		  setErrorMessage((prevState) => ({
+			...prevState,
+			confirmPassword: 'Les mots de passe ne sont pas identiques !',
+		  }));
+		  hasErrors = true;
 		}
-
-		if (!areAllErrorsEmpty(errorMessage)) return;
-		if (areAllErrorsEmpty(errorMessage)) setIsLoading(true);
-
+	  
+		if (hasErrors) {
+		  return;
+		}
+	  
+		setIsLoading(true);
+	  
 		axios
-			.post(`${process.env.GATSBY_API_URL}/auth/signup`, {
-				email: data.email,
-				name: data.name,
-				firstname: data.firstname,
-				password: data.confirmPassword,
-			})
-			.then(function () {
-				setIsLoading(false);
-				navigate('/sendMail');
-			})
-			.catch(function (error) {
-				if (error.response.status === 500) {
-					setIsLoading(false);
-					return toast.error("Tu n'es pas connecté à internet", {
-						position: 'top-center',
-						autoClose: 10000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-						theme: 'colored',
-						transition: Bounce,
-					});
-				}
-
-				return toast.error(error.message, {
-					position: 'top-center',
-					autoClose: 10000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: 'colored',
-					transition: Bounce,
-				});
+		  .post(`${process.env.GATSBY_API_URL}/auth/signup`, {
+			email: data.email,
+			name: data.name,
+			firstname: data.firstname,
+			password: data.password,
+		  })
+		  .then(function (response) {
+			setIsLoading(false);
+			navigate(`/sendMail?id=${response.data.data.id}&key=${response.data.token}`);
+		  })
+		  .catch(function (error) {
+			setIsLoading(false);
+			toast.error(error.message, {
+			  position: 'top-center',
+			  autoClose: 10000,
+			  hideProgressBar: false,
+			  closeOnClick: true,
+			  pauseOnHover: true,
+			  draggable: true,
+			  progress: undefined,
+			  theme: 'colored',
+			  transition: Bounce,
 			});
+		  });
+	  };
+	  
+
+	const authWithGoogle = () => {
+		window.open(`${process.env.GATSBY_API_URL}/auth/googleaccount`, '_self');
 	};
 
 	return (
@@ -303,11 +300,20 @@ const Signup = () => {
 					</button>
 					<button
 						type='button'
+						onClick={authWithGoogle}
 						className='w-full flex justify-center items-center gap-2 py-2 text-center text-shark-950 text-base font-medium rounded-lg border border-shark-500 hover:border-shark-600'>
 						<FcGoogle size={24} />
 						{'Continuer avec Google'}
 					</button>
 				</div>
+				<p className='text-center text-base'>
+					J'ai déjà un compte ?{' '}
+					<Link
+						to='/signin'
+						className='text-blue-500 hover:text-blue-700'>
+						Se connecter
+					</Link>
+				</p>
 			</form>
 		</main>
 	);

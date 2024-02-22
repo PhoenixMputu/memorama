@@ -14,7 +14,7 @@ export function isPasswordValid(password: string): boolean {
 		return false;
 	}
 
-	if (!/[@#$%^&*!]/.test(password)) {
+	if (!/[@#$%^&*!.]/.test(password)) {
 		return false;
 	}
 
